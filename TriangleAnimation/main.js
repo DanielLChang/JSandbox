@@ -25,9 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     triangle.style.height = 0;
     triangle.style.bottom = 0;
     triangle.style.right = 0;
-    // triangle.style.borderBottom = '100px solid black';
-    // triangle.style.borderLeft = '100px solid transparent';
-
 
     document.body.appendChild(triangle);
 
