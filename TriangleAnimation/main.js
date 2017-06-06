@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const time = 1 / 300;
   const btn = document.getElementById('btn');
   let height = 0;
   let width = 0;
@@ -7,14 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function animate() {
     const triangle = document.getElementById('triangle');
 
-    height += 5;
-    width += 5;
+    height += window.innerHeight * time;
+    width += window.innerWidth * time;
 
     triangle.style.borderBottom = `${height}px solid ${color}`;
     triangle.style.borderLeft = `${width}px solid transparent`;
 
     if (height <= window.innerHeight * 2
-      || width <= window.innerWidth * 2) setTimeout(() => animate(), 10);
+      || width <= window.innerWidth * 2) {
+        setTimeout(() => animate(), time);
+      }
   }
 
   btn.addEventListener('click', () => {
