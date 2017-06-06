@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('btn');
   let height = 0;
   let width = 0;
-  const color = '#' + Math.floor(Math.random()*16777215).toString(16);
+  let color = '#' + Math.floor(Math.random()*16777215).toString(16);
+  while (color.length !== 7) {
+    color = '#' + Math.floor(Math.random()*16777215).toString(16);
+  }
 
   function animate() {
     const triangle = document.getElementById('triangle');
