@@ -64,7 +64,19 @@ function rotateY(point, theta) {
   return [
     Math.cos(theta) * x - Math.sin(theta) * z,
     y,
-    Math.sin(theta) * x - Math.cos(theta) * z
+    Math.sin(theta) * x + Math.cos(theta) * z
+  ];
+}
+
+function rotateX(point, theta) {
+  const x = point[0];
+  const y = point[1];
+  const z = point[2];
+
+  return [
+    x,
+    Math.cos(theta) * y - Math.sin(theta) * z,
+    Math.sin(theta) * y + Math.cos(theta) * z
   ];
 }
 
@@ -72,11 +84,13 @@ let theta = 0;
 const dtheta = 0.02;
 
 function render() {
-  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, W, H);
 
   theta += dtheta;
   points.forEach((point) => {
-    point =  rotateY(point, theta);
+    point = rotateY(point, theta);
+    point = rotateX(point, 0.43 * theta);
     renderPoint(point);
   });
   requestAnimationFrame(render);
