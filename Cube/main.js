@@ -48,6 +48,7 @@ function renderPoint(point) {
   const x = projectedPoint[0];
   const y = projectedPoint[1];
 
+  ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x + 1, y + 1);
   ctx.lineWidth = 4;
@@ -55,10 +56,27 @@ function renderPoint(point) {
   ctx.stroke();
 }
 
+function rotateY(point, theta) {
+  const x = point[0];
+  const y = point[1];
+  const z = point[2];
+
+  return [
+    Math.cos(theta) * x - Math.sin(theta) * z,
+    y,
+    Math.sin(theta) * x - Math.cos(theta) * z
+  ];
+}
+
+let theta = 0;
+const dtheta = 0.02;
+
 function render() {
   ctx.clearRect(0, 0, W, H);
 
+  theta += dtheta;
   points.forEach((point) => {
+    point =  rotateY(point, theta);
     renderPoint(point);
   });
   requestAnimationFrame(render);
