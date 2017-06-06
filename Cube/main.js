@@ -21,10 +21,25 @@ function initGeometry() {
   }
 }
 
-function project(point) {
+function perspectiveProjection(point) {
+  const x = point[0];
+  const y = point[1];
+  const z = point[2];
+
   return [
-    W * (point[0] - MODEL_MIN_X) / (MODEL_MAX_X - MODEL_MIN_X),
-    H * (1 - (point[1] - MODEL_MIN_Y) / (MODEL_MAX_Y - MODEL_MIN_Y))
+    x / (z + 4),
+    y / (z + 4)
+  ];
+}
+
+function project(point) {
+  const perspectivePoint = perspectiveProjection(point);
+  const x = perspectivePoint[0];
+  const y = perspectivePoint[1];
+
+  return [
+    W * (x - MODEL_MIN_X) / (MODEL_MAX_X - MODEL_MIN_X),
+    H * (1 - (y  - MODEL_MIN_Y) / (MODEL_MAX_Y - MODEL_MIN_Y))
   ];
 }
 
