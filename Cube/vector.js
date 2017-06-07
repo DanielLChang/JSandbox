@@ -32,4 +32,28 @@ class Vector {
   subtract(other) {
     return this.add(other.scale(-1));
   }
+
+  rotateY(theta) {
+    const x = this[0];
+    const y = this[1];
+    const z = this[2];
+
+    return new Vector(
+      Math.cos(theta) * x - Math.sin(theta) * z,
+      y,
+      Math.sin(theta) * x + Math.cos(theta) * z
+    );
+  }
+
+  rotateX(theta) {
+    const x = this[0];
+    const y = this[1];
+    const z = this[2];
+
+    return new Vector(
+      x,
+      Math.cos(theta) * y - Math.sin(theta) * z,
+      Math.sin(theta) * y + Math.cos(theta) * z
+    );
+  }
 }

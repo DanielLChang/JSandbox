@@ -23,7 +23,7 @@ function initGeometry() {
   for (let x = -1; x <= 1; x += 2) {
     for (let y = -1; y <= 1; y += 2) {
       for (let z = -1; z <= 1; z += 2) {
-        points.push([x, y, z]);
+        points.push(new Vector(x, y, z));
       }
     }
   }
@@ -50,21 +50,24 @@ function perspectiveProjection(point) {
   const y = point[1];
   const z = point[2];
 
-  return [
+  return new Vector(
     x / (z + 4),
-    y / (z + 4)
-  ];
+    y / (z + 4),
+    z
+  );
 }
 
 function project(point) {
   const perspectivePoint = perspectiveProjection(point);
   const x = perspectivePoint[0];
   const y = perspectivePoint[1];
+  const z = perspectivePoint[2];
 
-  return [
+  return new Vector(
     W * (x - MODEL_MIN_X) / (MODEL_MAX_X - MODEL_MIN_X),
-    H * (1 - (y  - MODEL_MIN_Y) / (MODEL_MAX_Y - MODEL_MIN_Y))
-  ];
+    H * (1 - (y  - MODEL_MIN_Y) / (MODEL_MAX_Y - MODEL_MIN_Y)),
+    z
+  );
 }
 
 function renderPoint(point) {
@@ -97,30 +100,6 @@ function renderTriangle(triangle, color) {
   ctx.fill();
 }
 
-function rotateY(point, theta) {
-  const x = point[0];
-  const y = point[1];
-  const z = point[2];
-
-  return [
-    Math.cos(theta) * x - Math.sin(theta) * z,
-    y,
-    Math.sin(theta) * x + Math.cos(theta) * z
-  ];
-}
-
-function rotateX(point, theta) {
-  const x = point[0];
-  const y = point[1];
-  const z = point[2];
-
-  return [
-    x,
-    Math.cos(theta) * y - Math.sin(theta) * z,
-    Math.sin(theta) * y + Math.cos(theta) * z
-  ];
-}
-
 let theta = 0;
 const dtheta = 0.02;
 
@@ -131,8 +110,8 @@ function render() {
   theta += dtheta;
   triangles.forEach((triangle, idx) => {
     const rotatedTriangle = triangle.map((point) => {
-      point = rotateY(point, theta);
-      point = rotateX(point, 0.43 * theta);
+      point = point.rotateY(theta);
+      point = point.rotateX(0.43 * theta);
       return point;
     });
     const color = colors[Math.floor(idx / 2)];
