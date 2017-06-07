@@ -11,6 +11,9 @@ const ctx = canvas.getContext('2d');
 
 const points = [];
 const triangles = [];
+const colors = [
+  'red', 'green', 'blue', 'white', 'orange', 'purple', 'cyan', 'yellow'
+];
 
 function makeTriangle(a, b, c) {
   return [a, b, c];
@@ -77,7 +80,7 @@ function renderPoint(point) {
   ctx.stroke();
 }
 
-function renderTriangle(triangle) {
+function renderTriangle(triangle, color) {
   const projectedTriangle = triangle.map(project);
   const a = projectedTriangle[0];
   const b = projectedTriangle[1];
@@ -88,8 +91,10 @@ function renderTriangle(triangle) {
   ctx.lineTo(b[0], b[1]);
   ctx.lineTo(c[0], c[1]);
   ctx.lineTo(a[0], a[1]);
-  ctx.strokeStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.fillStyle = color;
   ctx.stroke();
+  ctx.fill();
 }
 
 function rotateY(point, theta) {
@@ -124,13 +129,14 @@ function render() {
   ctx.fillRect(0, 0, W, H);
 
   theta += dtheta;
-  triangles.forEach((triangle) => {
+  triangles.forEach((triangle, idx) => {
     const rotatedTriangle = triangle.map((point) => {
       point = rotateY(point, theta);
       point = rotateX(point, 0.43 * theta);
       return point;
     });
-    renderTriangle(rotatedTriangle);
+    const color = colors[Math.floor(idx / 2)];
+    renderTriangle(rotatedTriangle, color);
   });
   requestAnimationFrame(render);
 }
