@@ -10,13 +10,34 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const points = [];
+const triangles = [];
+
+function makeTriangle(a, b, c) {
+  return [a, b, c];
+}
 
 function initGeometry() {
-  for (let x = -1; x <= 1; x += STEP) {
-    for (let y = -1; y <= 1; y += STEP) {
-      for (let z = -1; z <= 1; z += STEP) {
+  for (let x = -1; x <= 1; x += 2) {
+    for (let y = -1; y <= 1; y += 2) {
+      for (let z = -1; z <= 1; z += 2) {
         points.push([x, y, z]);
       }
+    }
+  }
+
+  for (let dimension = 0; dimension <= 2; dimension++) {
+    for (let side = -1; side <= 1; side += 2) {
+      const sidePoints = points.filter((point) => {
+        return point[dimension] === side;
+      });
+
+      const a = sidePoints[0];
+      const b = sidePoints[1];
+      const c = sidePoints[2];
+      const d = sidePoints[3];
+
+      triangles.push(makeTriangle(a, b, c));
+      triangles.push(makeTriangle(d, b, c));
     }
   }
 }
@@ -56,6 +77,21 @@ function renderPoint(point) {
   ctx.stroke();
 }
 
+function renderTriangle(triangle) {
+  const projectedTriangle = triangle.map(project);
+  const a = projectedTriangle[0];
+  const b = projectedTriangle[1];
+  const c = projectedTriangle[2];
+
+  ctx.beginPath();
+  ctx.moveTo(a[0], a[1]);
+  ctx.lineTo(b[0], b[1]);
+  ctx.lineTo(c[0], c[1]);
+  ctx.lineTo(a[0], a[1]);
+  ctx.strokeStyle = 'white';
+  ctx.stroke();
+}
+
 function rotateY(point, theta) {
   const x = point[0];
   const y = point[1];
@@ -88,10 +124,13 @@ function render() {
   ctx.fillRect(0, 0, W, H);
 
   theta += dtheta;
-  points.forEach((point) => {
-    point = rotateY(point, theta);
-    point = rotateX(point, 0.43 * theta);
-    renderPoint(point);
+  triangles.forEach((triangle) => {
+    const rotatedTriangle = triangle.map((point) => {
+      point = rotateY(point, theta);
+      point = rotateX(point, 0.43 * theta);
+      return point;
+    });
+    renderTriangle(rotatedTriangle);
   });
   requestAnimationFrame(render);
 }
