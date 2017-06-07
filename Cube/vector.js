@@ -13,6 +13,10 @@ class Vector {
     );
   }
 
+  ccw(other) {
+    return this.cross(other)[2] > 0;
+  }
+
   add(other) {
     return new Vector(
       this[0] + other[0],

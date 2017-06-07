@@ -15,8 +15,15 @@ const colors = [
   'red', 'green', 'blue', 'white', 'orange', 'purple', 'cyan', 'yellow'
 ];
 
-function makeTriangle(a, b, c) {
-  return [a, b, c];
+function makeTriangle(a, b, c, dimension, side) {
+  const side1 = b.subtract(a);
+  const side2 = c.subtract(a);
+  const orientationVector = side1.cross(side2);
+
+  if (Math.sign(orientationVector[dimension]) === Math.sign(side)) {
+    return [a, b, c];
+  }
+  return [a, c, b];
 }
 
 function initGeometry() {
@@ -39,8 +46,13 @@ function initGeometry() {
       const c = sidePoints[2];
       const d = sidePoints[3];
 
-      triangles.push(makeTriangle(a, b, c));
-      triangles.push(makeTriangle(d, b, c));
+      if (dimension === 1) {
+        triangles.push(makeTriangle(a, b, c, dimension, side));
+        triangles.push(makeTriangle(d, b, c, dimension, side));
+      } else {
+        triangles.push(makeTriangle(a, b, c, dimension, -side));
+        triangles.push(makeTriangle(d, b, c, dimension, -side));
+      }
     }
   }
 }
@@ -89,15 +101,20 @@ function renderTriangle(triangle, color) {
   const b = projectedTriangle[1];
   const c = projectedTriangle[2];
 
-  ctx.beginPath();
-  ctx.moveTo(a[0], a[1]);
-  ctx.lineTo(b[0], b[1]);
-  ctx.lineTo(c[0], c[1]);
-  ctx.lineTo(a[0], a[1]);
-  ctx.strokeStyle = 'black';
-  ctx.fillStyle = color;
-  ctx.stroke();
-  ctx.fill();
+  const side1 = b.subtract(a);
+  const side2 = c.subtract(a);
+
+  if (side1.ccw(side2)) {
+    ctx.beginPath();
+    ctx.moveTo(a[0], a[1]);
+    ctx.lineTo(b[0], b[1]);
+    ctx.lineTo(c[0], c[1]);
+    ctx.lineTo(a[0], a[1]);
+    ctx.strokeStyle = 'black';
+    ctx.fillStyle = color;
+    ctx.stroke();
+    ctx.fill();
+  }
 }
 
 let theta = 0;
